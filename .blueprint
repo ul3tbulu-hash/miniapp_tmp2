@@ -1,0 +1,38 @@
+created:
+    - database/factories/UserFactory.php
+    - database/factories/CategoryFactory.php
+    - database/factories/ProductFactory.php
+    - database/factories/ProductImageFactory.php
+    - database/factories/CraftsmanProfileFactory.php
+    - database/factories/OrderFactory.php
+    - database/factories/ArticleFactory.php
+    - database/factories/ArticleTagFactory.php
+    - database/factories/InquiryFactory.php
+    - database/migrations/2025_07_02_090141_create_users_table.php
+    - database/migrations/2025_07_02_090142_create_categories_table.php
+    - database/migrations/2025_07_02_090143_create_products_table.php
+    - database/migrations/2025_07_02_090144_create_product_images_table.php
+    - database/migrations/2025_07_02_090145_create_craftsman_profiles_table.php
+    - database/migrations/2025_07_02_090146_create_orders_table.php
+    - database/migrations/2025_07_02_090147_create_articles_table.php
+    - database/migrations/2025_07_02_090148_create_article_tags_table.php
+    - database/migrations/2025_07_02_090149_create_inquiries_table.php
+    - app/Models/User.php
+    - app/Models/Category.php
+    - app/Models/Product.php
+    - app/Models/ProductImage.php
+    - app/Models/CraftsmanProfile.php
+    - app/Models/Order.php
+    - app/Models/Article.php
+    - app/Models/ArticleTag.php
+    - app/Models/Inquiry.php
+models:
+    User: { name: string, email: 'string:unique', password: string, role: "enum('admin', 'pengrajin')", is_verified: boolean, remember_token: 'string:nullable', timestamps: timestamps }
+    Category: { name: 'string:unique', description: 'text:nullable', is_active: boolean, timestamps: timestamps }
+    Product: { title: string, slug: 'string:unique', description: longtext, excerpt: string, price: 'decimal(10,2)', image: 'string:nullable', is_published: boolean, category_id: 'id foreign:App\Models\Category', user_id: 'id foreign:App\Models\User', timestamps: timestamps }
+    ProductImage: { product_id: 'id foreign:App\Models\Product', image_url: string, is_primary: boolean, timestamps: timestamps }
+    CraftsmanProfile: { user_id: 'id foreign:App\Models\User', bio: text, location: string, photo: 'string:nullable', is_approved: boolean, timestamps: timestamps }
+    Order: { product_id: 'id foreign:App\Models\Product', craftsman_profile_id: 'id foreign:App\Models\CraftsmanProfile', customer_name: string, customer_email: string, customer_phone: string, customer_address: text, status: "enum('pending', 'processed', 'delivered', 'cancelled')", total_price: 'decimal(10,2)', payment_method: string, note: 'text:nullable', timestamps: timestamps }
+    Article: { title: string, slug: 'string:unique', content: longtext, excerpt: string, featured_image: 'string:nullable', is_published: boolean, user_id: 'id foreign:App\Models\User', timestamps: timestamps }
+    ArticleTag: { article_id: 'id foreign:App\Models\Article', tag: string, timestamps: timestamps }
+    Inquiry: { name: string, email: string, message: text, type: "enum('join_craftsman', 'general_inquiry')", read_at: 'timestamp:nullable', timestamps: timestamps }

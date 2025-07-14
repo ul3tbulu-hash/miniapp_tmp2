@@ -1,0 +1,146 @@
+models:
+  User:
+    name: string
+    email: string:unique
+    password: string
+    role: enum('admin', 'pengrajin')
+    is_verified: boolean
+    remember_token: string:nullable
+    timestamps: true
+
+  Category:
+    name: string:unique
+    description: text:nullable
+    is_active: boolean
+    timestamps: true
+
+  Product:
+    title: string
+    slug: string:unique
+    description: longtext
+    excerpt: string
+    price: decimal(10,2)
+    image: string:nullable
+    is_published: boolean
+    category_id: id foreign:App\Models\Category
+    user_id: id foreign:App\Models\User
+    timestamps: true
+
+  ProductImage:
+    product_id: id foreign:App\Models\Product
+    image_url: string
+    is_primary: boolean
+    timestamps: true
+
+  CraftsmanProfile:
+    user_id: id foreign:App\Models\User
+    bio: text
+    location: string
+    photo: string:nullable
+    is_approved: boolean
+    timestamps: true
+
+  Order:
+    product_id: id foreign:App\Models\Product
+    craftsman_profile_id: id foreign:App\Models\CraftsmanProfile
+    customer_name: string
+    customer_email: string
+    customer_phone: string
+    customer_address: text
+    status: enum('pending', 'processed', 'delivered', 'cancelled')
+    total_price: decimal(10,2)
+    payment_method: string
+    note: text:nullable
+    timestamps: true
+
+  Article:
+    title: string
+    slug: string:unique
+    content: longtext
+    excerpt: string
+    featured_image: string:nullable
+    is_published: boolean
+    user_id: id foreign:App\Models\User
+    timestamps: true
+
+  ArticleTag:
+    article_id: id foreign:App\Models\Article
+    tag: string
+    timestamps: true
+
+  Inquiry:
+    name: string
+    email: string
+    message: text
+    type: enum('join_craftsman', 'general_inquiry')
+    read_at: timestamp:nullable
+    timestamps: true
+
+controllers:
+
+console:
+  make:seeder UserSeeder:
+    count: 5
+    name: ['Admin Aceh', 'Pengrajin A', 'Pengrajin B']
+    email: ['admin@aceh.id', 'pengrajin1@aceh.id', 'pengrajin2@aceh.id']
+    role: ['admin', 'pengrajin']
+    password: Hash<bismillah>
+    is_verified: true
+
+  make:seeder CategorySeeder:
+    count: 3
+    name: ['Peusijuek', 'Sirih', 'Resam']
+    description: "Produk tradisional Aceh"
+    is_active: true
+
+  make:seeder ProductSeeder:
+    count: 10
+    title: "Paket Peusijuek Sederhana|Standar|Premium"
+    description: "<p>Peusijuek adalah simbol keindahan dan makna spiritual dalam budaya Aceh.</p>"
+    excerpt: "Paket lengkap dengan semua elemen tradisional Aceh."
+    price: randomFloat(2, 50, 150)
+    image: "https://via.placeholder.com/600x400 "
+    is_published: true
+    category_id: random(1, 3)
+    user_id: random(2, 3)
+
+  make:seeder CraftsmanProfileSeeder:
+    count: 3
+    bio: "Pengrajin berpengalaman 20 tahun di Aceh Besar"
+    location: "Aceh Besar, Banda Aceh"
+    photo: "https://via.placeholder.com/300x300 "
+    is_approved: true
+    user_id: random(2, 3)
+
+  make:seeder ArticleSeeder:
+    count: 8
+    title: "Apa Itu Peusijuek?|Sejarah Peusijuek|Kenapa Harus Dipeusijuek?"
+    content: "<p>Lorem ipsum dolor sit amet...</p>"
+    excerpt: "Lorem ipsum dolor sit amet..."
+    featured_image: "https://via.placeholder.com/800x400 "
+    is_published: true
+    user_id: 1
+
+tests:
+  Feature\ProductTest:
+    test_can_view_products_page
+    test_can_view_single_product
+    test_admin_can_create_product
+    test_pengrajin_can_manage_their_products
+
+  Feature\ArticleTest:
+    test_can_view_articles
+    test_can_view_single_article
+    test_editor_can_publish_article
+
+options:
+  types:
+    - App\\Models\\User
+    - App\\Models\\Category
+    - App\\Models\\Product
+    - App\\Models\\ProductImage
+    - App\\Models\\CraftsmanProfile
+    - App\\Models\\Order
+    - App\\Models\\Article
+    - App\\Models\\ArticleTag
+    - App\\Models\\Inquiry
